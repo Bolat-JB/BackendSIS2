@@ -1,0 +1,21 @@
+services:
+  task-service:
+    build: .
+    container_name: sis2-task-service
+    ports:
+      - "50051:50051" # gRPC
+      - "8443:8443" # REST HTTPS or HTTP/2
+      - "8080:8080" # REST HTTP/1.1 
+    command: ["./server"]
+
+  benchmark-runner:
+    build: .
+    container_name: sis2-benchmark-runner
+    depends_on:
+      - task-service
+    command: ["./client"]
+    environment:
+      - GRPC_HOST=task-service:50051
+      - REST_H2_URL=https://task-service:8443/api/v1/tasks
+      - REST_H1_URL=https://task-service:8443/api/v1/tasks
+      - REST_CLEAR_URL=http://task-service:8080/api/v1/tasks

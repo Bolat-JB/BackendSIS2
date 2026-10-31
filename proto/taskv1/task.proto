@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package task.v1;
+option go_package = "sis2/proto/taskv1;taskv1";
+
+service TaskService {
+  rpc CreateTask (CreateTaskRequest) returns (TaskResponse);
+  rpc GetTask (GetTaskRequest) returns (TaskResponse);
+  rpc ListTasks (ListTasksRequest) returns (ListTasksResponse);
+  rpc UpdateTask (UpdateTaskRequest) returns (TaskResponse);
+  rpc DeleteTask (DeleteTaskRequest) returns (DeleteTaskResponse);
+}
+
+message CreateTaskRequest {
+  string idempotency_key = 1;
+  string title = 2;
+  string description = 3;
+  int32 priority = 4;
+}
+
+message GetTaskRequest {
+  string task_id = 1;
+}
+
+message ListTasksRequest {
+  int32 limit = 1;
+}
+
+message ListTasksResponse {
+  repeated TaskResponse tasks = 1;
+}
+
+message UpdateTaskRequest {
+  string task_id = 1;
+  int32 status = 2;
+  int32 version = 3;
+  string title = 4;
+  string description = 5;
+}
+
+message DeleteTaskRequest {
+  string task_id = 1;
+}
+
+message DeleteTaskResponse {
+  bool success = 1;
+}
+
+message TaskResponse {
+  string task_id = 1;
+  string title = 2;
+  string description = 3;
+  int32 priority = 4;
+  int32 status = 5;
+  int32 version = 6;
+  int64 created_at = 7;
+}
